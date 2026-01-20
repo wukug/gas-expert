@@ -258,12 +258,36 @@
 
 
 
-    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+<script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
     <script>
+        // 1. 定义一个函数：获取或生成用户的唯一 ID
+        function getOrCreateUserId() {
+            const STORAGE_KEY = 'coze_guest_user_id';
+            // 尝试从浏览器缓存里拿 ID
+            let userId = localStorage.getItem(STORAGE_KEY);
+            
+            // 如果没有（说明是新访客），就生成一个随机的
+            if (!userId) {
+                userId = 'guest_' + Math.floor(Math.random() * 1000000000);
+                localStorage.setItem(STORAGE_KEY, userId); // 存起来，下次刷新还是他
+            }
+            return userId;
+        }
+
+        // 2. 获取当前用户的临时 ID
+        const currentUserId = getOrCreateUserId();
+
+        // 3. 初始化 SDK
         const client = new CozeWebSDK.WebChatClient({
             lang: 'zh-CN',
             config: {
                 bot_id: '7576906632756723727',
+            },
+            // ⚠️ 关键修改：在这里告诉 Coze "我是谁"
+            userInfo: { 
+                id: currentUserId, // 每个人都有不同的 ID
+                url: '', // 头像留空
+                nickname: '访客' // 昵称
             },
             componentProps: {
                 title: '法规查询助手',
@@ -272,7 +296,7 @@
             },
             auth: {
                 type: 'token',
-                // 已经帮你填好了你之前的 Token，直接运行即可
+                // 你的 Token (注意：虽然这里还是你的 Token，但配合上面的 userInfo，Coze 会把不同 ID 的人分开存储)
                 token: 'pat_9OE1ObtGiQAf7J5RimBgOuDe7EehNG2mozDtDqg4LUiudbi7dZf03kSfo0jKNmJU',
                 onRefreshToken: function () {
                     return 'pat_9OE1ObtGiQAf7J5RimBgOuDe7EehNG2mozDtDqg4LUiudbi7dZf03kSfo0jKNmJU'
@@ -280,7 +304,6 @@
             }
         });
 
-        // 自动弹出
         client.showChatBot();
     </script>
 </body>
