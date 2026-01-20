@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>燃气规范智能专家系统</title>
+
+    <style>
+        /* 全局样式：保持你喜欢的深蓝科技风 */
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            height: 100vh;
+            margin: 0;
+            font-family: '微软雅黑', 'Segoe UI', sans-serif;
+            color: white;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 50%;
+            padding-left: 8%;
+            /* --- 新增的核心代码 --- */
+
+            padding-right: 20px;
+            /* 右边留点空隙，防止字贴着滚动条 */
+            /* -------------------- */
+        }
+
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a8c0cc;
+            margin-bottom: 10px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 650px;
+            /* 稍微加宽以适应长标题 */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 列表样式升级：增加滚动条 */
+        ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            line-height: 1.8;
+            /* 增加行高，让阅读更舒适 */
+            max-height: 250px;
+            /* 限制高度 */
+            overflow-y: auto;
+            /* 内容多了自动出现滚动条 */
+            padding-right: 10px;
+            /* 给滚动条留点位置 */
+        }
+
+        /* 美化滚动条 (Webkit内核浏览器) */
+        ul::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ul::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        ul::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .disclaimer {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* =========================================================
+           暴力修复补丁：强制覆盖 Coze SDK 的代码块样式 
+           ========================================================= */
+
+        /* 1. 针对所有代码块容器 */
+        div[class*="code-block"],
+        pre,
+        code {
+            background-color: transparent !important;
+            /* 去掉灰色背景，变透明 */
+            border: none !important;
+            /* 去掉边框 */
+            padding: 0 !important;
+            /* 去掉内边距 */
+            margin: 0 !important;
+            box-shadow: none !important;
+            /* 去掉阴影 */
+            overflow: visible !important;
+            /* 杀掉滚动条 */
+            white-space: pre-wrap !important;
+            /* 强制文字自动换行，不要横向滚动 */
+        }
+
+        /* 2. 强制把代码块里的字变成白色/普通字体 */
+        div[class*="code-block"] *,
+        pre *,
+        code * {
+            color: inherit !important;
+            /* 继承父元素的颜色（白色） */
+            font-family: '微软雅黑', sans-serif !important;
+            /* 强制用普通字体，不用代码字体 */
+            font-size: 1rem !important;
+            /* 字体大小正常化 */
+        }
+
+        /* === 右侧彩蛋区域样式 === */
+        .easter-egg-zone {
+            /* 占据屏幕右边 50% */
+            width: 50%;
+            height: 100vh;
+
+            /* 弹性布局：让熊猫人居中 */
+            display: flex;
+            flex-direction: column;
+            /* 图片和字上下排 */
+            justify-content: center;
+            /* 垂直居中 */
+            align-items: center;
+            /* 水平居中 */
+
+            /* 绝对定位：确保它老实待在右边底层 */
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 0;
+            /* 层级最低，会被 Coze 聊天窗挡住 */
+        }
+
+        /* 熊猫人图片样式 */
+        .easter-egg-zone img {
+            width: 300px;
+            /* 图片大小，自己调 */
+            height: auto;
+            border-radius: 10px;
+            /*稍微圆角一点*/
+            /* 加一点“抖动”动画的伏笔，或者透明度 */
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        /* 恶搞文字样式 */
+        .meme-text {
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px #000;
+            /* 给文字加黑边，更有表情包的感觉 */
+            transform: rotate(-5deg);
+            /* 稍微歪一点，显得比较嘲讽 */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🔥 石油天然气行业规范智能专家</h1>
+
+        <div class="easter-egg-zone">
+            <img src="./panda.png" alt="熊猫人">
+
+            <h2 class="meme-text">
+                关掉我干嘛？<br>还不快去查规范！
+            </h2>
+        </div>
+
+        <div class="info-card">
+            <div class="card-title">📚 已收录标准与规范 (共15部)</div>
+            <ul>
+                <li>《城镇燃气设计规范》 GB 50028-2006 (2020版)</li>
+                <li>《输气管道工程设计规范》 GB 50251-2015</li>
+                <li>《输油管道工程设计规范》 GB 50253-2014</li>
+                <li>《油气输送管道完整性管理规范》 GB 32167-2015</li>
+                <li>《油气长输管道工程施工及验收规范》 GB 50369-2014</li>
+                <li>《油气输送管道穿越工程设计规范》 GB 50423-2013</li>
+                <li>《钢质管道外腐蚀控制规范》 GB/T 21447-2018</li>
+                <li>《埋地钢质管道阴极保护技术规范》 GB/T 21448-2017</li>
+                <li>《石油天然气钢制管道无损检测》 SY/T 4109-2020</li>
+                <li>《埋地钢质管道外防腐层保温层修复技术规范》 SY/T 5918-2017</li>
+                <li>《陆上油气管道第三方施工管理技术规范》（试行）</li>
+                <li>《中华人民共和国石油天然气管道保护法》</li>
+                <li>《关于处理石油管道和天然气管道与公路相互关系的若干规定》(试行)</li>
+                <li>《关于规范公路桥梁与石油天然气管道交叉工程管理的通知》</li>
+                <li>《油气输送管道与铁路交汇工程技术及管理规定》</li>
+            </ul>
+        </div>
+
+        <div class="info-card">
+            <div class="card-title">💡 使用说明 & 免责声明</div>
+
+            <div style="font-size: 0.9rem; line-height: 1.8; color: #e0e0e0;">
+                <p style="margin: 5px 0 10px 0;">
+                    请在右下角对话框输入问题。若未检索到答案，可能是知识库暂未收录该规范（见上方列表）。
+                </p>
+
+                <p style="margin-bottom: 10px;">
+                    <strong>✨ 提示：</strong>本系统基于RAG检索，提问时使用<strong>“贴近规范原文的用语”</strong>比“口语化描述”命中率更高。
+                </p>
+
+                <div
+                    style="background: rgba(79, 172, 254, 0.1); padding: 10px; border-radius: 8px; border-left: 3px solid #4facfe;">
+                    <div style="display: flex; align-items: flex-start;">
+                        <span style="color: #4facfe; font-weight: bold; white-space: nowrap; margin-right: 5px;">
+                            示例：
+                        </span>
+
+                        <div>
+                            <div style="margin-bottom: 4px;">❌ 口语化：“规范中对管道箱涵尺寸有什么要求？”</div>
+                            <div>✅ <strong>术语化</strong>：“管道箱涵<strong>净高和净宽</strong>有什么要求？”</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                ⚠️ 免责声明：AI 回答仅供参考，具体工程实施、验收及法律依据请务必查阅上述纸质版原规范。
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script src="https://lf-cdn.coze.cn/obj/unpkg/flow-platform/chat-app-sdk/1.2.0-beta.19/libs/cn/index.js"></script>
+    <script>
+        const client = new CozeWebSDK.WebChatClient({
+            lang: 'zh-CN',
+            config: {
+                bot_id: '7576906632756723727',
+            },
+            componentProps: {
+                title: '法规查询助手',
+                width: 600,
+                layout: 'pc',
+            },
+            auth: {
+                type: 'token',
+                // 已经帮你填好了你之前的 Token，直接运行即可
+                token: 'pat_9OE1ObtGiQAf7J5RimBgOuDe7EehNG2mozDtDqg4LUiudbi7dZf03kSfo0jKNmJU',
+                onRefreshToken: function () {
+                    return 'pat_9OE1ObtGiQAf7J5RimBgOuDe7EehNG2mozDtDqg4LUiudbi7dZf03kSfo0jKNmJU'
+                }
+            }
+        });
+
+        // 自动弹出
+        client.showChatBot();
+    </script>
+</body>
+
+</html>
